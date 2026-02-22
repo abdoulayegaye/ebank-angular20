@@ -1,0 +1,15 @@
+<div class="modal-header text-white bg-danger">
+  <h5 class="modal-title" id="exampleModalLabel">Erreur</h5>
+  <button
+    type="button"
+    class="btn-close"
+    aria-label="Close"
+    (click)="errormModalRef.close()"
+  ></button>
+</div>
+<div class="modal-body text-danger">Les donnees n'ont pas été ajoutées dans la base de donnees. Si l'erreur persiste, veullez contacter le service technique.  <!-- {{ title }} --></div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-danger" (click)="errormModalRef.close()">
+    Quitter
+  </button>
+</div>

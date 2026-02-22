@@ -1,0 +1,38 @@
+<div class="card mt-5">
+  <h3 class="card-header">Formulaire d'enregistrement des clients</h3>
+  <div class="card-body">
+    <form [formGroup]="newCustomerForm" (ngSubmit)="onSubmit()" name="createForm">
+      <div class="mb-3">
+        <label for="name" class="form-label">Nom du client</label>
+        <input type="text" class="form-control" id="name"  name="name" formControlName="name">
+        @if (isValidTouchedOrDirty('name')) {
+          @if (fieldHasError('name', 'required')) {
+            <div id="nameNotNullError" class="message-error error-color" role="alert">Le champ nom du client est obligatoire.</div>
+          }
+        }
+      </div>
+      <div class="mb-3">
+        <label for="email" class="form-label">Email du client</label>
+        <input type="text" class="form-control" id="email"  name="email" formControlName="email">
+        @if (isValidTouchedOrDirty('email')) {
+          @if (fieldHasError('email', 'required')) {
+            <div class="message-error error-color">Le champ email du client est obligatoire.</div>
+          }
+          @if (fieldHasError('email', 'email')) {
+            <div class="message-error error-color">Le format de l'email est invalide.</div>
+          }
+          @if (fieldHasError('email', 'CONFLICT')) {
+            <div class="message-error error-color">
+              {{ newCustomerForm.get('email')?.errors?.['CONFLICT'] }}
+            </div>
+          }
+        }
+      </div>
+      <div class="text-end">
+        <button [class]="newCustomerForm.invalid? 'btn btn-secondary' : 'btn btn-success'" [disabled]="newCustomerForm.invalid">Valider</button>
+        <button class="ms-2 btn btn-danger button-right">Annuler</button>
+      </div>
+    </form>
+  </div>
+</div>
+
