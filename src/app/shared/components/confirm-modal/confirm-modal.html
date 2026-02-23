@@ -1,15 +1,28 @@
-<div class="modal-header text-white bg-success">
-  <h5 class="modal-title" id="exampleModalLabel">Confirmation</h5>
-  <button
-    type="button"
-    class="btn-close"
-    aria-label="Close"
-    (click)="confirmModalRef.close()"
-  ></button>
-</div>
-<div class="modal-body text-success">Les donnees sont bien ajoutées dans la base de donnees. <!-- {{ title }} --></div>
-<div class="modal-footer">
-  <button type="button" class="btn btn-success" (click)="confirmModalRef.close()">
-    Quitter
+<div class="success-modal">
+
+  <!-- Icône animée -->
+  <div class="success-icon-wrapper">
+    <div class="success-circle">
+      <svg class="checkmark" viewBox="0 0 52 52">
+        <circle class="checkmark-circle" cx="26" cy="26" r="25" fill="none"/>
+        <path class="checkmark-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+      </svg>
+    </div>
+    <div class="success-ripple"></div>
+  </div>
+
+  <!-- Texte -->
+  <h4 class="success-title">Succès !</h4>
+
+  <!-- Barre de progression -->
+  <div class="progress-bar-wrapper">
+    <div class="progress-bar-fill"></div>
+  </div>
+  <p class="success-timer">Fermeture automatique dans 2s...</p>
+
+  <!-- Bouton -->
+  <button class="btn-close-modal" (click)="confirmModalRef.close()">
+    <i class="bi bi-x"></i>
   </button>
+
 </div>

@@ -8,6 +8,8 @@ import {ErrorModal} from '../../../shared/components/error-modal/error-modal';
 import {ConfirmModal} from '../../../shared/components/confirm-modal/confirm-modal';
 import {CustomersService} from '../services/customers';
 import {CustomerResponse} from '../models/customer-response';
+import {emailExistsValidator} from '../validations/email-exists.validator';
+import {ApiResponse} from '../../../shared/models/api-response';
 
 @Component({
   selector: 'app-form-customers',
@@ -33,7 +35,11 @@ export class FormCustomers {
   private createCustomerForm() {
     return new FormGroup({
       name: new FormControl("", [Validators.required]),
-      email: new FormControl("", [Validators.required, Validators.email])
+      email: new FormControl(
+        "",
+        [Validators.required, Validators.email],  // sync validators
+        [emailExistsValidator()]                  // async validator 👈
+      )
     });
   }
 
@@ -54,17 +60,12 @@ export class FormCustomers {
           console.log(response);
         },
         error: (error) => {
-          if (error.status === 409) {
-            this.newCustomerForm.get('email')?.setErrors({
-              CONFLICT: error.error.message  // 👈 le message du backend
-            });
-          }
           this.httpErrorService.handleError(error);
           this.errorModalRef = this.modalService.open(ErrorModal);
         },
         complete: () => {
           console.log('save complete');
-          this.confirmModalRef = this.modalService.open(ConfirmModal);
+          this.confirmModalRef = this.modalService.open(ConfirmModal, {modalClass: 'modal-dialog-centered modal-sm'});
           this.getAllCustomers();
           this.newCustomerForm.reset();
         }
@@ -95,9 +96,9 @@ export class FormCustomers {
   }
 
   getAllCustomers () {
-    this.customerService.all<CustomerResponse[]>('customers').subscribe({
+    this.customerService.all<ApiResponse<CustomerResponse[]>>('customers').subscribe({
         next: (response) => {
-          this.allCustomers.customers = response;
+          this.allCustomers.customers = response.data;
           this.loadAllCustomersAfterAddEvent.emit(this.allCustomers);
           console.log(this.allCustomers)
         },

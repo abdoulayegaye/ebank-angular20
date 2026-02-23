@@ -1,15 +1,29 @@
-<div class="modal-header text-white bg-danger">
-  <h5 class="modal-title" id="exampleModalLabel">Erreur</h5>
-  <button
-    type="button"
-    class="btn-close"
-    aria-label="Close"
-    (click)="errormModalRef.close()"
-  ></button>
-</div>
-<div class="modal-body text-danger">Les donnees n'ont pas été ajoutées dans la base de donnees. Si l'erreur persiste, veullez contacter le service technique.  <!-- {{ title }} --></div>
-<div class="modal-footer">
-  <button type="button" class="btn btn-danger" (click)="errormModalRef.close()">
-    Quitter
+<div class="error-modal">
+
+  <!-- Icône animée -->
+  <div class="error-icon-wrapper">
+    <div class="error-circle">
+      <svg class="crossmark" viewBox="0 0 52 52">
+        <circle class="crossmark-circle" cx="26" cy="26" r="25" fill="none"/>
+        <path class="crossmark-cross1" fill="none" d="M16 16 L36 36"/>
+        <path class="crossmark-cross2" fill="none" d="M36 16 L16 36"/>
+      </svg>
+    </div>
+    <div class="error-ripple"></div>
+  </div>
+
+  <!-- Texte -->
+  <h4 class="error-title">Erreur !</h4>
+
+  <!-- Barre de progression -->
+  <div class="progress-bar-wrapper">
+    <div class="progress-bar-fill"></div>
+  </div>
+  <p class="error-timer">Fermeture automatique dans 5s...</p>
+
+  <!-- Bouton fermer -->
+  <button class="btn-close-modal" (click)="errorModalRef.close()">
+    <i class="bi bi-x"></i>
   </button>
+
 </div>

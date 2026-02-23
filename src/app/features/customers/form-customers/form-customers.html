@@ -1,5 +1,5 @@
-<div class="card mt-5">
-  <h3 class="card-header">Formulaire d'enregistrement des clients</h3>
+<div class="card">
+  <h3 class="card-header">Ajout d'un client</h3>
   <div class="card-body">
     <form [formGroup]="newCustomerForm" (ngSubmit)="onSubmit()" name="createForm">
       <div class="mb-3">
@@ -14,23 +14,36 @@
       <div class="mb-3">
         <label for="email" class="form-label">Email du client</label>
         <input type="text" class="form-control" id="email"  name="email" formControlName="email">
+        @if (newCustomerForm.get('email')?.pending) {
+          <div class="d-flex align-items-center gap-2 text-muted mt-1">
+            <div class="spinner-border spinner-border-sm text-primary" role="status">
+              <span class="visually-hidden">Chargement...</span>
+            </div>
+            <small>Vérification de l'email...</small>
+          </div>
+        }
         @if (isValidTouchedOrDirty('email')) {
           @if (fieldHasError('email', 'required')) {
-            <div class="message-error error-color">Le champ email du client est obligatoire.</div>
+            <div class="message-error">Le champ email du client est obligatoire.</div>
           }
           @if (fieldHasError('email', 'email')) {
-            <div class="message-error error-color">Le format de l'email est invalide.</div>
+            <div class="message-error">Le format de l'email est invalide.</div>
           }
           @if (fieldHasError('email', 'CONFLICT')) {
-            <div class="message-error error-color">
+            <div class="message-error">
               {{ newCustomerForm.get('email')?.errors?.['CONFLICT'] }}
+            </div>
+          }
+          @if (fieldHasError('email', 'EMAIL_EXIST')) {
+            <div class="message-error">
+              <div class="message-error">Cet email est déja enregistré.</div>
             </div>
           }
         }
       </div>
       <div class="text-end">
-        <button [class]="newCustomerForm.invalid? 'btn btn-secondary' : 'btn btn-success'" [disabled]="newCustomerForm.invalid">Valider</button>
-        <button class="ms-2 btn btn-danger button-right">Annuler</button>
+        <button [class]="newCustomerForm.invalid? 'btn btn-sm btn-outline-secondary' : 'btn btn-sm btn-outline-success'" [disabled]="newCustomerForm.invalid"><i class="fa fa-plus me-1"></i>Valider</button>
+        <button class="ms-2 btn btn-sm btn-outline-danger button-right"><i class="fa fa-times me-1"></i>Annuler</button>
       </div>
     </form>
   </div>
