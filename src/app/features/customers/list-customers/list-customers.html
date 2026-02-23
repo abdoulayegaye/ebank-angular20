@@ -1,152 +1,152 @@
-<div class="card card-body text-center">
-  <h3 class="card-header">Liste des clients</h3>
+<div class="list-card">
 
-  <div class="card-body">
+  <!-- Header -->
+  <div class="list-header">
+    <div class="list-header-left">
+      <div class="header-icon"><i class="fa fa-users"></i></div>
+      <div>
+        <h5 class="header-title">Liste des Clients</h5>
+        <p class="header-subtitle">
+          <span class="total-badge">{{ totalElements }}</span> client(s) enregistré(s)
+        </p>
+      </div>
+    </div>
 
-    <div class="d-flex justify-content-between align-items-center mb-4 gap-3 flex-wrap">
-
-      <!-- Champ de recherche -->
-      <div class="search-wrapper position-relative flex-grow-1" style="max-width: 400px;">
-
-        <input
-          type="text"
-          class="form-control ps-4 pe-5"
-          placeholder="Rechercher par nom, email ou ID..."
-          [value]="searchQuery()"
-          (input)="onSearch($any($event.target).value)"
-        />
-
-        <!-- Loader recherche API -->
-        @if (isSearching()) {
-          <div class="position-absolute" style="top: 50%; right: 12px; transform: translateY(-50%);">
-            <div class="spinner-border spinner-border-sm text-primary"></div>
-          </div>
+    <div class="list-header-right">
+      <!-- Search -->
+      <div class="search-box">
+        <i class="fa fa-search search-icon"></i>
+        <input type="text" class="search-input"
+               placeholder="Rechercher par nom, email ou ID..."
+               [value]="searchQuery"
+               (input)="onSearch.emit($any($event.target).value)"/>
+        @if (isLoading) {
+          <span class="search-status">
+            <i class="fa fa-spinner fa-spin"></i>
+          </span>
         }
-
-        <!-- Bouton clear -->
-        @if (searchQuery() && !isSearching()) {
-          <button
-            class="btn btn-link position-absolute p-0 text-muted"
-            style="top: 50%; right: 10px; transform: translateY(-50%);"
-            (click)="clearSearch()"
-          >
+        @if (searchQuery && !isLoading) {
+          <button class="search-clear" (click)="onClearSearch.emit()">
             <i class="fa fa-times"></i>
           </button>
         }
       </div>
 
-      <!-- Info + sélecteur page size -->
-      <div class="d-flex align-items-center gap-2">
-        <span class="text-muted small">
-          @if (isApiSearch()) {
-            <span class="badge bg-info me-1">API</span>
-          }
-          {{ filteredCustomers.length }} résultat(s)
-        </span>
-        <select
-          class="form-select form-select-sm w-auto"
-          [value]="pageSize()"
-          (change)="pageSize.set(+$any($event.target).value); currentPage.set(1)"
-        >
-          <option value="5">5</option>
-          <option value="10">10</option>
-          <option value="25">25</option>
-          <option value="50">50</option>
-        </select>
-        <span class="text-muted small">par page</span>
-      </div>
-
+      <!-- Page size -->
+      <select class="page-size-select"
+              [value]="pageSize"
+              (change)="onPageSizeChange.emit(+$any($event.target).value)">
+        <option value="5">5 / page</option>
+        <option value="10">10 / page</option>
+        <option value="25">25 / page</option>
+        <option value="50">50 / page</option>
+      </select>
     </div>
+  </div>
 
-
-    <!-- Tableau -->
-    <table class="table table-striped">
+  <!-- Table -->
+  <div class="table-wrapper">
+    <table class="customers-table">
       <thead>
       <tr>
         <th>ID</th>
         <th>Nom</th>
         <th>Email</th>
-        <th colspan="3">Actions</th>
+        <th class="text-center">Actions</th>
       </tr>
       </thead>
       <tbody>
-        @for (customer of paginatedCustomers; track customer.id) {
-          <tr>
-            <td><span class="badge bg-light text-dark">{{ customer.id }}</span></td>
-            <td><i class="fa fa-user-circle me-2 text-muted"></i>{{ customer.name }}</td>
-            <td><i class="fa fa-envelope me-2 text-muted"></i>{{ customer.email }}</td>
-            <td>
-              <button class="btn btn-sm btn-outline-warning me-2"><i class="fa fa-pen me-1"></i>Modifier</button>
-              <button class="btn btn-sm btn-outline-danger me-2"><i class="fa fa-times me-1"></i>Supprimer</button>
-              <button class="btn btn-sm btn-outline-dark"><i class="fa fa-eye me-1"></i>Détail</button>
-            </td>
-          </tr>
-        } @empty {
-          <tr>
-            <td colspan="3" class="text-center py-5 text-muted">
-              @if (searchQuery()) {
-                <div>
-                  <i class="fa fa-search fa-2x mb-2 d-block opacity-25"></i>
-                  Aucun client trouvé pour <strong>"{{ searchQuery() }}"</strong>
-                  <div class="mt-2">
-                    <button class="btn btn-sm btn-outline-secondary" (click)="clearSearch()">
-                      <i class="fa fa-times me-1"></i>Effacer la recherche
+        @if (isLoading) {
+          @for (i of [1,2,3,4,5]; track i) {
+            <tr class="skeleton-row">
+              <td><div class="skeleton short"></div></td>
+              <td><div class="skeleton medium"></div></td>
+              <td><div class="skeleton long"></div></td>
+              <td><div class="skeleton short"></div></td>
+            </tr>
+          }
+        } @else {
+          @for (customer of customers; track customer.id; let i = $index) {
+            <tr class="data-row" [style.animation-delay]="i * 40 + 'ms'">
+              <td>
+                <span class="id-badge">#{{ customer.id }}</span>
+              </td>
+              <td>
+                <div class="customer-name">
+                  <!-- <div class="customer-avatar">{{ customer.name?.charAt(0).toUpperCase() }}</div> -->
+                  <span>{{ customer.name }}</span>
+                </div>
+              </td>
+              <td>
+                <div class="email-cell">
+                  <!-- <i class="fa fa-envelope"></i> -->
+                  {{ customer.email }}
+                </div>
+              </td>
+              <td>
+                <div class="actions-cell">
+                  <button class="action-btn edit" title="Modifier">
+                    <i class="fa fa-pen"></i>
+                  </button>
+                  <button class="action-btn delete" title="Supprimer">
+                    <i class="fa fa-trash"></i>
+                  </button>
+                  <button class="action-btn view" title="Détail">
+                    <i class="fa fa-eye"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="4">
+                <div class="empty-state">
+                  @if (searchQuery) {
+                    <i class="fa fa-search empty-icon"></i>
+                    <p>Aucun résultat pour <strong>"{{ searchQuery }}"</strong></p>
+                    <button class="btn-clear" (click)="onClearSearch.emit()">
+                      <i class="fa fa-times"></i> Effacer la recherche
                     </button>
-                  </div>
+                  } @else {
+                    <i class="fa fa-inbox empty-icon"></i>
+                    <p>Aucun client enregistré</p>
+                  }
                 </div>
-              } @else {
-                <div>
-                  <i class="fa fa-inbox fa-2x mb-2 d-block opacity-25"></i>
-                  Aucun client trouvé.
-                </div>
-              }
-            </td>
-          </tr>
+              </td>
+            </tr>
+          }
         }
       </tbody>
     </table>
-
-    <!-- Pagination -->
-    @if (totalPages > 1) {
-      <div class="d-flex justify-content-between align-items-center mt-3">
-
-        <!-- Info -->
-        <span class="text-muted small">
-          Page {{ currentPage() }} sur {{ totalPages }}
-        </span>
-
-        <!-- Boutons -->
-        <nav>
-          <ul class="pagination pagination-sm mb-0">
-
-            <!-- Précédent -->
-            <li class="page-item" [class.disabled]="currentPage() === 1">
-              <button class="page-link" (click)="previousPage()">
-                <i class="bi bi-chevron-left"></i>
-              </button>
-            </li>
-
-            <!-- Numéros de page -->
-            @for (page of pages; track page) {
-              <li class="page-item" [class.active]="page === currentPage()">
-                <button class="page-link" (click)="goToPage(page)">
-                  {{ page }}
-                </button>
-              </li>
-            }
-
-            <!-- Suivant -->
-            <li class="page-item" [class.disabled]="currentPage() === totalPages">
-              <button class="page-link" (click)="nextPage()">
-                <i class="bi bi-chevron-right"></i>
-              </button>
-            </li>
-
-          </ul>
-        </nav>
-
-      </div>
-    }
-
   </div>
+
+  <!-- Pagination -->
+  @if (totalPages > 1) {
+    <div class="list-footer">
+      <span class="pagination-info">
+        Page <strong>{{ currentPage + 1 }}</strong> sur <strong>{{ totalPages }}</strong>
+        — {{ totalElements }} résultat(s)
+      </span>
+      <div class="pagination">
+        <button class="page-btn nav" [disabled]="currentPage === 0" (click)="onPageChange.emit(0)">
+          <i class="fa fa-angles-left"></i>
+        </button>
+        <button class="page-btn nav" [disabled]="currentPage === 0" (click)="onPageChange.emit(currentPage - 1)">
+          <i class="fa fa-chevron-left"></i>
+        </button>
+        @for (page of pages; track page) {
+          <button class="page-btn" [class.active]="page === currentPage" (click)="onPageChange.emit(page)">
+            {{ page + 1 }}
+          </button>
+        }
+        <button class="page-btn nav" [disabled]="currentPage === totalPages - 1" (click)="onPageChange.emit(currentPage + 1)">
+          <i class="fa fa-chevron-right"></i>
+        </button>
+        <button class="page-btn nav" [disabled]="currentPage === totalPages - 1" (click)="onPageChange.emit(totalPages - 1)">
+          <i class="fa fa-angles-right"></i>
+        </button>
+      </div>
+    </div>
+  }
+
 </div>

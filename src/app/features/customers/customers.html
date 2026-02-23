@@ -1,14 +1,26 @@
-<div class="main-area">
-  <app-header />
-  <div class="space">
-    <div class="row page-content">
-      <div class="col-md-3">
-        <app-form-customers (loadAllCustomersAfterAddEvent)="getAllCustomersAfterSave($event)" />
-      </div>
-      <div class="col-md-9">
-        <app-list-customers [allCustomers]="listCustomers" />
+<app-header />
+  <div class="main-area container mt-5">
+    <div class="space">
+      <div class="row page-content">
+        <div class="col-md-4">
+          <app-form-customers
+            (loadAllCustomersAfterAddEvent)="getAllCustomersAfterSave()" />
+        </div>
+        <div class="col-md-8">
+          <app-list-customers
+            [customers]="customers()"
+            [totalElements]="totalElements()"
+            [totalPages]="totalPages()"
+            [currentPage]="currentPage()"
+            [pageSize]="pageSize()"
+            [searchQuery]="searchQuery()"
+            [isLoading]="isLoading()"
+            (onSearch)="onSearch($event)"
+            (onClearSearch)="clearSearch()"
+            (onPageChange)="goToPage($event)"
+            (onPageSizeChange)="pageSize.set($event); loadPage(0)"/>
+        </div>
       </div>
     </div>
   </div>
-  <app-footer />
-</div>
+<app-footer />

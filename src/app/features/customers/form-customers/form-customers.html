@@ -1,51 +1,88 @@
-<div class="card">
-  <h3 class="card-header">Ajout d'un client</h3>
-  <div class="card-body">
+<div class="form-card">
+  <div class="form-card-header">
+    <div class="header-icon">
+      <i class="fa fa-user-plus"></i>
+    </div>
+    <div>
+      <h5 class="header-title">Nouveau Client</h5>
+      <p class="header-subtitle">Remplissez les informations</p>
+    </div>
+  </div>
+
+  <div class="form-card-body">
     <form [formGroup]="newCustomerForm" (ngSubmit)="onSubmit()" name="createForm">
-      <div class="mb-3">
-        <label for="name" class="form-label">Nom du client</label>
-        <input type="text" class="form-control" id="name"  name="name" formControlName="name">
+
+      <!-- Nom -->
+      <div class="field-group" [class.has-error]="isValidTouchedOrDirty('name')">
+        <label class="field-label">
+          <i class="fa fa-user"></i>
+        </label>
+        <input type="text" class="field-input" id="name" name="name"
+               formControlName="name" placeholder="Nom complet du client"/>
         @if (isValidTouchedOrDirty('name')) {
           @if (fieldHasError('name', 'required')) {
-            <div id="nameNotNullError" class="message-error error-color" role="alert">Le champ nom du client est obligatoire.</div>
+            <div class="field-error-msg">
+              <i class="fa fa-exclamation-circle"></i> Le nom est obligatoire
+            </div>
           }
         }
       </div>
-      <div class="mb-3">
-        <label for="email" class="form-label">Email du client</label>
-        <input type="text" class="form-control" id="email"  name="email" formControlName="email">
+
+      <!-- Email -->
+      <div class="field-group mt-3" [class.has-error]="isValidTouchedOrDirty('email')">
+        <label class="field-label">
+          <i class="fa fa-envelope"></i>
+        </label>
+        <div class="input-wrapper">
+          <input type="text" class="field-input" id="email" name="email"
+                 formControlName="email" placeholder="Email du client"/>
+          <span class="input-status">
+            @if (newCustomerForm.get('email')?.pending) {
+              <i class="fa fa-spinner fa-spin text-primary"></i>
+            }
+            @if (newCustomerForm.get('email')?.valid && newCustomerForm.get('email')?.dirty) {
+              <i class="fa fa-check-circle" style="color: #22c55e;"></i>
+            }
+          </span>
+        </div>
         @if (newCustomerForm.get('email')?.pending) {
-          <div class="d-flex align-items-center gap-2 text-muted mt-1">
-            <div class="spinner-border spinner-border-sm text-primary" role="status">
-              <span class="visually-hidden">Chargement...</span>
-            </div>
-            <small>Vérification de l'email...</small>
+          <div class="field-checking">
+            <i class="fa fa-spinner fa-spin"></i> Vérification en cours...
           </div>
         }
         @if (isValidTouchedOrDirty('email')) {
           @if (fieldHasError('email', 'required')) {
-            <div class="message-error">Le champ email du client est obligatoire.</div>
+            <div class="field-error-msg"><i class="fa fa-exclamation-circle"></i> L'email est obligatoire</div>
           }
           @if (fieldHasError('email', 'email')) {
-            <div class="message-error">Le format de l'email est invalide.</div>
+            <div class="field-error-msg"><i class="fa fa-exclamation-circle"></i> Format invalide</div>
           }
           @if (fieldHasError('email', 'CONFLICT')) {
-            <div class="message-error">
-              {{ newCustomerForm.get('email')?.errors?.['CONFLICT'] }}
+            <div class="field-error-msg">
+              <i class="fa fa-exclamation-circle"></i> {{ newCustomerForm.get('email')?.errors?.['CONFLICT'] }}
             </div>
           }
           @if (fieldHasError('email', 'EMAIL_EXIST')) {
-            <div class="message-error">
-              <div class="message-error">Cet email est déja enregistré.</div>
-            </div>
+            <div class="field-error-msg"><i class="fa fa-exclamation-circle"></i> Email déjà enregistré</div>
           }
         }
       </div>
-      <div class="text-end">
-        <button [class]="newCustomerForm.invalid? 'btn btn-sm btn-outline-secondary' : 'btn btn-sm btn-outline-success'" [disabled]="newCustomerForm.invalid"><i class="fa fa-plus me-1"></i>Valider</button>
-        <button class="ms-2 btn btn-sm btn-outline-danger button-right"><i class="fa fa-times me-1"></i>Annuler</button>
+
+      <!-- Actions -->
+      <div class="form-actions">
+        <button type="button" class="btn-cancel" (click)="newCustomerForm.reset()">
+          <i class="fa fa-times"></i> Annuler
+        </button>
+        <button type="submit" class="btn-submit"
+                [disabled]="newCustomerForm.invalid || newCustomerForm.pending">
+          @if (newCustomerForm.pending) {
+            <i class="fa fa-spinner fa-spin"></i> Vérification...
+          } @else {
+            <i class="fa fa-plus"></i> Enregistrer
+          }
+        </button>
       </div>
+
     </form>
   </div>
 </div>
-

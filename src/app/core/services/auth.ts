@@ -4,17 +4,8 @@ import {HttpClient} from '@angular/common/http';
 import {Router} from '@angular/router';
 import {Observable, tap} from 'rxjs';
 import {Storage} from './storage';
-
-export interface LoginRequest {
-  username: string;
-  password: string;
-}
-
-export interface LoginResponse {
-  user: any;
-  roles: string;
-  token: string;
-}
+import {LoginRequest} from '../models/login-request.model';
+import {LoginResponse} from '../models/login-response.model';
 
 @Injectable({
   providedIn: 'root',

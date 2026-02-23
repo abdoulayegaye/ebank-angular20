@@ -8,8 +8,7 @@ import {ErrorModal} from '../../../shared/components/error-modal/error-modal';
 import {ConfirmModal} from '../../../shared/components/confirm-modal/confirm-modal';
 import {CustomersService} from '../services/customers';
 import {CustomerResponse} from '../models/customer-response';
-import {emailExistsValidator} from '../validations/email-exists.validator';
-import {ApiResponse} from '../../../shared/models/api-response';
+import {emailValidator, strictEmailValidator} from '../validations/email.validator';
 
 @Component({
   selector: 'app-form-customers',
@@ -27,7 +26,7 @@ export class FormCustomers {
   customerRequest: CustomerRequest = {};
   httpErrorService = inject(HttpError);
   allCustomers: AllCustomersResponse={customers: []};
-  @Output() loadAllCustomersAfterAddEvent = new EventEmitter<AllCustomersResponse>();
+  @Output() loadAllCustomersAfterAddEvent = new EventEmitter<void>();
   confirmModalRef: MdbModalRef<ConfirmModal> | null = null;
   errorModalRef: MdbModalRef<ErrorModal> | null = null;
   modalService = inject(MdbModalService);
@@ -37,8 +36,8 @@ export class FormCustomers {
       name: new FormControl("", [Validators.required]),
       email: new FormControl(
         "",
-        [Validators.required, Validators.email],  // sync validators
-        [emailExistsValidator()]                  // async validator 👈
+        [Validators.required, strictEmailValidator],  // sync validators
+        [emailValidator()]                  // async validator 👈
       )
     });
   }
@@ -54,23 +53,29 @@ export class FormCustomers {
     this.customerRequest = {
       name: this.newCustomerForm.get("name")!.value,
       email: this.newCustomerForm.get("email")!.value,
-    }
+    };
+
     this.customerService.save<CustomerRequest, CustomerResponse>('customers', this.customerRequest).subscribe({
-        next: (response) => {
-          console.log(response);
-        },
-        error: (error) => {
-          this.httpErrorService.handleError(error);
-          this.errorModalRef = this.modalService.open(ErrorModal);
-        },
-        complete: () => {
-          console.log('save complete');
-          this.confirmModalRef = this.modalService.open(ConfirmModal, {modalClass: 'modal-dialog-centered modal-sm'});
-          this.getAllCustomers();
-          this.newCustomerForm.reset();
-        }
+      next: (response) => {
+        console.log(response);
+      },
+      error: (error) => {
+        this.httpErrorService.handleError(error);
+        this.errorModalRef = this.modalService.open(ErrorModal);
+      },
+      complete: () => {
+        // Ouvre le modal de confirmation
+        this.confirmModalRef = this.modalService.open(ConfirmModal, {
+          modalClass: 'modal-dialog-centered modal-sm'
+        });
+
+        // ✅ Émet DIRECTEMENT sans attendre la fermeture du modal
+        this.loadAllCustomersAfterAddEvent.emit();
+
+        // Reset le formulaire
+        this.newCustomerForm.reset();
       }
-    );
+    });
   }
 
   isValidTouchedOrDirty(fieldName: string) {
@@ -93,22 +98,5 @@ export class FormCustomers {
 
   fieldHasError(fieldName: string, errorValue: string) {
     return this.newCustomerForm.controls[fieldName].errors?.[errorValue];
-  }
-
-  getAllCustomers () {
-    this.customerService.all<ApiResponse<CustomerResponse[]>>('customers').subscribe({
-        next: (response) => {
-          this.allCustomers.customers = response.data;
-          this.loadAllCustomersAfterAddEvent.emit(this.allCustomers);
-          console.log(this.allCustomers)
-        },
-        error: (error) => {
-          this.httpErrorService.handleError(error);
-        },
-        complete: () => {
-          console.log('getting all sectors after save complete');
-        }
-      }
-    );
   }
 }

@@ -12,12 +12,12 @@
       "architect": {
         "build": {
           "builder": "@angular/build:application",
-          "stylePreprocessorOptions": {
-            "sass": {
-              "silenceDeprecations": ["import"]
-            }
-          },
           "options": {
+            "stylePreprocessorOptions": {
+              "sass": {
+                "silenceDeprecations": ["import"]
+              }
+            },
             "browser": "src/main.ts",
             "tsConfig": "tsconfig.app.json",
             "assets": [

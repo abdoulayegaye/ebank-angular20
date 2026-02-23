@@ -3,7 +3,7 @@ import { AbstractControl, AsyncValidatorFn, ValidationErrors } from '@angular/fo
 import { Observable, map, catchError, of, debounceTime, switchMap, first } from 'rxjs';
 import { CustomersService } from '../services/customers';
 
-export function emailExistsValidator(): AsyncValidatorFn {
+export function emailValidator(): AsyncValidatorFn {
 
   const customerService = inject(CustomersService);
 
@@ -21,4 +21,13 @@ export function emailExistsValidator(): AsyncValidatorFn {
       first()
     );
   };
+}
+
+export function strictEmailValidator(control: AbstractControl): ValidationErrors | null {
+  if (!control.value) return null;
+
+  // Exige un domaine avec extension (.com, .fr, etc.)
+  const regex = /^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$/;
+
+  return regex.test(control.value) ? null : { email: true };
 }
