@@ -91,7 +91,7 @@
                   <button class="action-btn delete" title="Supprimer">
                     <i class="fa fa-trash"></i>
                   </button>
-                  <button class="action-btn view" title="Détail">
+                  <button (click)="onDetail.emit(customer)" class="action-btn view" title="Détail">
                     <i class="fa fa-eye"></i>
                   </button>
                 </div>

@@ -5,17 +5,18 @@ import {CustomersService} from './services/customers';
 import {HttpError} from '../../shared/services/http-error';
 import {CustomerResponse} from './models/customer-response';
 import {FormCustomers} from './form-customers/form-customers';
-import {Footer} from '../../shared/components/footer/footer';
 import {debounceTime, distinctUntilChanged, Subject} from 'rxjs';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
+import {MdbModalRef, MdbModalService} from 'mdb-angular-ui-kit/modal';
+import {ConfirmModal} from '../../shared/components/confirm-modal/confirm-modal';
+import {DetailCustomers} from './detail-customers/detail-customers';
 
 @Component({
   selector: 'app-customers',
   imports: [
     Header,
     ListCustomers,
-    FormCustomers,
-    Footer
+    FormCustomers
   ],
   templateUrl: './customers.html',
   styleUrl: './customers.css',
@@ -24,6 +25,7 @@ export class Customers implements OnInit {
 
   customerService  = inject(CustomersService);
   httpErrorService = inject(HttpError);
+  modalService = inject(MdbModalService);
 
   customers  = signal<CustomerResponse[]>([]);
   totalElements = signal<number>(0);
@@ -83,11 +85,19 @@ export class Customers implements OnInit {
     }
     this.getAllCustomers(page, this.pageSize(), this.searchQuery());
   }
+
   previousPage():            void { this.goToPage(this.currentPage() - 1); }
   nextPage():                void { this.goToPage(this.currentPage() + 1); }
 
   getAllCustomersAfterSave(): void {
     this.currentPage.set(0);
     this.getAllCustomers(0, this.pageSize(), this.searchQuery());
+  }
+
+  openDetailModal(customer: CustomerResponse): void {
+    this.modalService.open(DetailCustomers, {
+      modalClass: 'modal-dialog-centered',
+      data: { customer }
+    });
   }
 }

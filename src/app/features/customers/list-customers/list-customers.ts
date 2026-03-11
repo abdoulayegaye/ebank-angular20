@@ -24,6 +24,7 @@ export class ListCustomers {
   @Output() onClearSearch    = new EventEmitter<void>();
   @Output() onPageChange     = new EventEmitter<number>();
   @Output() onPageSizeChange = new EventEmitter<number>();
+  @Output() onDetail = new EventEmitter<CustomerResponse>();
 
   get pages(): number[] {
     return Array.from({ length: this.totalPages }, (_, i) => i);

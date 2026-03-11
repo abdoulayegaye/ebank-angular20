@@ -1,0 +1,12 @@
+.hero-container {
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  background: #0f172a; /* même couleur que le fond de l'image */
+}
+
+.hero-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain; /* ← affiche l'image entière sans rogner */
+}

@@ -6,6 +6,7 @@ import {Observable, tap} from 'rxjs';
 import {Storage} from './storage';
 import {LoginRequest} from '../models/login-request.model';
 import {LoginResponse} from '../models/login-response.model';
+import {LoginResponseKeycloak} from '../models/login-response-keycloak.model';
 
 @Injectable({
   providedIn: 'root',
@@ -21,10 +22,10 @@ export class Auth {
 
   isAuthenticated = signal<boolean>(this.hasToken());
 
-  login(credentials: LoginRequest): Observable<LoginResponse> {
-    return this.http.post<LoginResponse>(`${this.baseUrl}${this.uri}/authenticate`, credentials).pipe(
+  login(credentials: LoginRequest): Observable<LoginResponseKeycloak> {
+    return this.http.post<LoginResponseKeycloak>(`${this.baseUrl}${this.uri}/authenticate`, credentials).pipe(
       tap(response => {
-        this.storage.setToken(response.token);
+        this.storage.setToken(response.access_token);
         this.storage.setUser(response.user);
         this.isAuthenticated.set(true);
         console.log(this.storage.getUser())

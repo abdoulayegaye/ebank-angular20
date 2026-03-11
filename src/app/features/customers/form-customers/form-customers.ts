@@ -2,7 +2,6 @@ import {Component, EventEmitter, inject, Output} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import { CustomerRequest } from "../models/customer-request";
 import {HttpError} from '../../../shared/services/http-error';
-import {AllCustomersResponse} from '../models/all-customers-response';
 import {MdbModalRef, MdbModalService} from 'mdb-angular-ui-kit/modal';
 import {ErrorModal} from '../../../shared/components/error-modal/error-modal';
 import {ConfirmModal} from '../../../shared/components/confirm-modal/confirm-modal';
@@ -25,7 +24,6 @@ export class FormCustomers {
   fb: FormBuilder = inject(FormBuilder);
   customerRequest: CustomerRequest = {};
   httpErrorService = inject(HttpError);
-  allCustomers: AllCustomersResponse={customers: []};
   @Output() loadAllCustomersAfterAddEvent = new EventEmitter<void>();
   confirmModalRef: MdbModalRef<ConfirmModal> | null = null;
   errorModalRef: MdbModalRef<ErrorModal> | null = null;

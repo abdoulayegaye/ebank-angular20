@@ -1,1 +1,51 @@
-<p>detail-customers works!</p>
+<div class="detail-modal">
+
+  <!-- Header -->
+  <div class="detail-header">
+    <div class="detail-avatar">{{ initials }}</div>
+    <div>
+      <h5 class="detail-name">{{ customer?.name }}</h5>
+      <span class="detail-badge">Client actif</span>
+    </div>
+    <button class="close-btn" (click)="modalRef.close()">
+      <i class="fa fa-times"></i>
+    </button>
+  </div>
+
+  <!-- Body -->
+  <div class="detail-body">
+
+    <div class="detail-item">
+      <div class="detail-icon id-icon"><i class="fa fa-hashtag"></i></div>
+      <div>
+        <span class="detail-label">Identifiant</span>
+        <span class="detail-value">#{{ customer?.id }}</span>
+      </div>
+    </div>
+
+    <div class="detail-item">
+      <div class="detail-icon name-icon"><i class="fa fa-user"></i></div>
+      <div>
+        <span class="detail-label">Nom complet</span>
+        <span class="detail-value">{{ customer?.name }}</span>
+      </div>
+    </div>
+
+    <div class="detail-item">
+      <div class="detail-icon email-icon"><i class="fa fa-envelope"></i></div>
+      <div>
+        <span class="detail-label">Email</span>
+        <span class="detail-value">{{ customer?.email }}</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Footer -->
+  <div class="detail-footer">
+    <button class="btn-close-modal" (click)="modalRef.close()">
+      <i class="fa fa-times"></i> Fermer
+    </button>
+  </div>
+
+</div>
